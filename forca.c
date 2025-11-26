@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "forca.h"
 
 /* SOBRE PONTEIROS 
 -> & aponta onde a var ta na memoria, te da o endereco que essa var
@@ -8,7 +9,7 @@
 
 
 /*variaveis globais*/
-int tentativas = 0;
+int chutesdados = 0;
 char palavrasecreta[20];
     
 //armazena as letras que foram chutadas
@@ -25,14 +26,14 @@ void chuta() {
     char chute;
     scanf(" %c", &chute);
 
-    chutes[tentativas] = chute;
-    tentativas++;
+    chutes[chutesdados] = chute;
+    chutesdados++;
 }
 
 int jachutou(char letra){
     int achou = 0;
 
-    for (int j = 0; j < tentativas; j++){
+    for (int j = 0; j < chutesdados; j++){
         if(chutes[j] == letra) {
             achou = 1;
             break;
@@ -42,7 +43,30 @@ int jachutou(char letra){
     return achou;
 }
 
-void desenhaforca(){
+int acertou() {
+    for(int i = 0; i <strlen(palavrasecreta); i++){
+        if(!jachutou(palavrasecreta[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int enforcou() {
+    int erros = 0;
+
+    for(int i = 0; i < chutesdados; i++){
+        int existe = jachutou(palavrasecreta[i]);
+
+        if(!existe) erros++;
+    }
+
+    //retorna true caso >= 5, false caso contrario
+    return erros >= 5;
+}
+
+void desenhaforca() {
     for(int i = 0; i < strlen(palavrasecreta); i++){
 
         // a letra ja foi chutada?
@@ -63,8 +87,6 @@ void escolhepalavra(){
 }
 
 int main (){  
-    int acertou = 0;
-    int enforcou = 0;
 
     escolhepalavra();
     abertura();
@@ -77,6 +99,6 @@ int main (){
         // captura um chute
         chuta();
 
-    } while (!acertou && !enforcou);
+    } while (!acertou() && !enforcou());
 
 }
