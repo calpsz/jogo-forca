@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include "forca.h"
 
 /* SOBRE PONTEIROS 
@@ -44,7 +46,7 @@ int jachutou(char letra){
 }
 
 int acertou() {
-    for(int i = 0; i <strlen(palavrasecreta); i++){
+    for(int i = 0; i < strlen(palavrasecreta); i++){
         if(!jachutou(palavrasecreta[i])) {
             return 0;
         }
@@ -58,6 +60,7 @@ int enforcou() {
 
     for(int i = 0; i < chutesdados; i++){
         int existe = jachutou(palavrasecreta[i]);
+
 
         if(!existe) erros++;
     }
@@ -82,8 +85,64 @@ void desenhaforca() {
     printf("\n");
 }
 
+void adicionapalavra(){
+
+    char quer;
+
+    printf("Deseja adicionar uma nova palavra no banco de dados? (S/N)\n");
+    scanf(" %c", &quer);
+
+    if(quer == 'S'){
+
+        char novapalavra[20];
+        printf("Digite a nova palavra: ");
+        scanf("%s", novapalavra);
+
+        FILE* f;
+
+        // r+ -> vai ler e escrever no arquivo
+        f = fopen("palavras.txt", "r+");
+        if(f == 0){
+            printf("Desculpe, banco de dados n∆o dispon°vel :(\n\n");
+            exit(1);
+        }
+
+        int qntd;
+        fscanf(f, "%d", &qntd);
+        qntd++;
+
+        fseek(f, 0, SEEK_SET);
+        fprintf(f, "%d", qntd);
+
+        fseek(f, 0, SEEK_END);
+        fprintf(f, "\n%s", novapalavra);
+
+        fclose(f);
+    }
+
+    printf("\nObrigada por jogar! <3\n");
+}
+
 void escolhepalavra(){
-    sprintf(palavrasecreta, "MELANCIA");
+    //fopen devolve pra gente um ponteiro do arquivo, por isso tem que colocar numa var ponteiro
+    FILE* f = fopen("palavras.txt", "r");
+
+    if(f == 0){
+        printf("Desculpe, banco de dados n∆o dispon°vel :(\n\n");
+        exit(1);
+    }
+
+    int qntdpalavras;
+    fscanf(f, "%d", &qntdpalavras);
+
+    srand(time(0));
+    int randomico = rand() % qntdpalavras;
+
+    for (int i = 0; i <= randomico; i++){
+        fscanf(f, "%s", palavrasecreta);
+    }
+
+    fclose(f);
 }
 
 int main (){  
@@ -101,4 +160,5 @@ int main (){
 
     } while (!acertou() && !enforcou());
 
+    adicionapalavra();
 }
