@@ -12,7 +12,7 @@
 
 /*variaveis globais*/
 int chutesdados = 0;
-char palavrasecreta[20];
+char palavrasecreta[TAMANHO_PALAVRA];
     
 //armazena as letras que foram chutadas
 char chutes[26];
@@ -26,6 +26,7 @@ void abertura(){
 
 void chuta() {
     char chute;
+    printf("Digite a letra: ");
     scanf(" %c", &chute);
 
     chutes[chutesdados] = chute;
@@ -56,20 +57,46 @@ int acertou() {
 }
 
 int enforcou() {
+    //retorna true caso >= 5, false caso contrario
+    return chuteserrados() >= 6;
+}
+
+int chuteserrados(){
     int erros = 0;
 
     for(int i = 0; i < chutesdados; i++){
-        int existe = jachutou(palavrasecreta[i]);
+        //int existe = jachutou(palavrasecreta[i]);
 
+        int existe = 0;
+
+        for(int j = 0; j < strlen(palavrasecreta); j++){
+            if(chutes[i] == palavrasecreta[j]){
+                existe = 1;
+                break;
+            }
+        }
 
         if(!existe) erros++;
     }
 
-    //retorna true caso >= 5, false caso contrario
-    return erros >= 5;
+    return erros;
 }
 
 void desenhaforca() {
+
+    int erros = chuteserrados();
+
+    printf("  _______       \n");
+    printf(" |/      |      \n");
+    printf(" |      %c%c%c  \n", (erros >=1 ? '(' : ' '), (erros >=1 ? '_' : ' '), (erros >=1 ? ')' : ' '));
+    printf(" |      %c%c%c  \n", (erros >=3 ? '\\' : ' '), (erros >=2 ? '|' : ' '), (erros >=4 ? '/' : ' '));
+    printf(" |       %c     \n", (erros >=2 ? '|' : ' '));
+    printf(" |      %c %c   \n", (erros >=5 ? '/' : ' '), (erros >=6 ? '\\' : ' '));
+    printf(" |              \n");
+    printf("_|___           \n");
+    printf("\n\n");
+
+
     for(int i = 0; i < strlen(palavrasecreta); i++){
 
         // a letra ja foi chutada?
@@ -94,7 +121,7 @@ void adicionapalavra(){
 
     if(quer == 'S'){
 
-        char novapalavra[20];
+        char novapalavra[TAMANHO_PALAVRA];
         printf("Digite a nova palavra: ");
         scanf("%s", novapalavra);
 
@@ -159,6 +186,46 @@ int main (){
         chuta();
 
     } while (!acertou() && !enforcou());
+
+    if(acertou()){
+        printf("\n\n");
+        printf(" =========================================  \n");
+        printf("               .-=========-.               \n");
+        printf("               \\'-=======-'/               \n");
+        printf("               _|   .=.   |_               \n");
+        printf("              ((|  {{1}}  |))              \n");
+        printf("               \\|   /|\\   |/               \n");
+        printf("                \\__ '`' __/                \n");
+        printf("                  _`) (`_                  \n");
+        printf("                _/_______\\_                \n");
+        printf("               /___________\\               \n");
+        printf(" =========================================  \n");
+        printf("\n        PARABNS!! VOCÒ GANHOU!!!!         \n");
+        printf("         A PALAVRA ERA: %s           \n\n", palavrasecreta);
+        printf(" =========================================  \n");
+    }
+    else {
+        printf("\n\n");
+        printf(" ================================================  \n");
+        printf("                       ______ \n");
+        printf("                    .-'      '-. \n");
+        printf("                   /            \\ \n");
+        printf("       _          |              |          _ \n");
+        printf("      ( \\         |,  .-.  .-.  ,|         / ) \n");
+        printf("       > '=._     | )(__/  \\__)( |     _.=' < \n");
+        printf("      (_/'=._'=._ |/     /\\     \\| _.='_.='\\_) \n");
+        printf("             '=._ (_     ^^     _)'_.=' \n");
+        printf("                 '=\\__|IIIIII|__/=' \n");
+        printf("                _.='| \\IIIIII/ |''=._ \n");
+        printf("      _     _.='_.='\\          /'=._'=._     _ \n");
+        printf("     ( \\_.='_.='     `--------`     '=._'=._/ ) \n");
+        printf("      > _.='                            '=._ < \n");
+        printf("     (_/                                    \\_) \n");
+        printf(" ================================================  \n");
+        printf("\n                  FOI DE BASE D:                \n");
+        printf("               A PALAVRA ERA: %s                \n\n", palavrasecreta);
+        printf(" ================================================ \n");
+    }
 
     adicionapalavra();
 }
